@@ -1,6 +1,11 @@
-# apptemplate
+# ElectronVueViteTemplate
 
 This template should help get you started developing with Vue 3 in Vite.
+
+# Electron
+
+This template supports electron context isolation, node packages access in webworkers etc...
+the node integration in renderer process is disabled.
 
 ## Recommended IDE Setup
 
