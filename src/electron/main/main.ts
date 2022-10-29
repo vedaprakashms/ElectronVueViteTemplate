@@ -14,6 +14,7 @@ app.whenReady().then(() => {
     width:800,
     height:600,
     autoHideMenuBar:true,
+    frame: false,
     webPreferences: {
       contextIsolation: true,
       nodeIntegrationInWorker: true,

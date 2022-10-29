@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
+import MenuBar from "@/components/menubar.vue"
 
 import myworker1 from "@/webworkers/1.worker?worker"
 
@@ -10,85 +10,51 @@ worker1.postMessage("this is awsome")
 console.log(window.myApi?.getString())
 console.log(window.myApi?.getDownloadPath())
 
+let closeApp = ()=>window.myApi?.closeApp()
+let minimize = ()=>window.myApi?.minimize()
+let toggleMaximize=()=>window.myApi?.toggleMaximize()
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+    <header class="titlebar">
+      <div class="bg-black w-full align-middle content-center flex justify-between ">
+        <div class="hamurger mx-2 mt-1 Clickbutton md:hidden">
+          <div class="h-1 w-4 bg-white mb-[2px]"></div>
+          <div class="h-1 w-4 bg-white mb-[2px]"></div>
+          <div class="h-1 w-4 bg-white mb-[2px]"></div>
+        </div>
+        <h1 class="text-white font-bold mx-2 max-sm:text-center">US Patent Status </h1>
+        <div class="max-md:hidden text-white">
+          <MenuBar/>
+        </div>
+        <div class="align-middle">
+          <fa class="text-green-500 mx-1 Clickbutton" icon="circle" @click="minimize"/>
+          <fa class="text-amber-500 mx-1 Clickbutton" icon="circle" @click="toggleMaximize"/>
+          <fa class="text-red-500 mx-1 Clickbutton" icon="circle" @click="closeApp"/>          
+        </div>
+      </div>
+    </header>
+  
+    <RouterView class="md:h-[93.5%] h-[90%]" />
 
-  <RouterView />
+    <footer>
+      <div class="w-full bg-black">
+        <h1 class="text-white">this is footer</h1>
+      </div>
+    </footer>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.titlebar {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-app-region: drag;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.Clickbutton {
+  -webkit-app-region: no-drag;
 }
 </style>
+
