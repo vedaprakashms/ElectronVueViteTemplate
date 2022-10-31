@@ -13,6 +13,8 @@ app.whenReady().then(() => {
   win = new BrowserWindow({
     width:800,
     height:600,
+    minHeight:600,
+    minWidth:512,
     autoHideMenuBar:true,
     frame: false,
     webPreferences: {
