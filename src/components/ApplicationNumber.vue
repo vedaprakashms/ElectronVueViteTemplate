@@ -21,7 +21,7 @@ let k = () => {
 </script>
 <template>
     <div class="bg-slate-700 text-white flex align-middle">
-        <h1>Patent No: {{ props.data.number }}</h1>
+        <h1>Application No: {{ props.data.number }}</h1>
         <fa :icon="['fas', kr]" :class="bac" @click="k" />
     </div>
 </template>

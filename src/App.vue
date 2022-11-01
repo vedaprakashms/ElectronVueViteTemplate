@@ -2,14 +2,6 @@
 import { RouterView } from 'vue-router'
 import MenuBar from '@/components/menubar.vue'
 
-import myworker1 from '@/webworkers/1.worker?worker'
-
-const worker1 = new myworker1()
-
-worker1.postMessage('this is awsome')
-console.log(window.myApi?.getString())
-console.log(window.myApi?.getDownloadPath())
-
 let closeApp = () => window.myApi?.closeApp()
 let minimize = () => window.myApi?.minimize()
 let toggleMaximize = () => window.myApi?.toggleMaximize()
@@ -48,7 +40,7 @@ let toggleMaximize = () => window.myApi?.toggleMaximize()
         </div>
     </header>
 
-    <RouterView class="lg:h-[93.5%] md:h-[92%] h-[92%] bg-slate-400" />
+    <RouterView class="lg:h-[93/100] md:h-[92%] h-[92%] bg-slate-400" />
 
     <footer>
         <div class="w-full bg-black">

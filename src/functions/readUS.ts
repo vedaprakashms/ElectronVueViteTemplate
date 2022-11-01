@@ -1,13 +1,6 @@
 import { read, utils } from 'xlsx'
-import { useToast } from 'vue-toastification'
-import { useUSPTOStore } from '@/stores/uspto'
 
 let readUSTemplate = async (data: any) => {
-    //init Toastification
-    const toast = useToast()
-    //init usptostore
-    let usStore = useUSPTOStore()
-    toast.info('Started to read Selected template...', { timeout: 2500 })
     const workbook = read(data)
     let worksheet = workbook.Sheets['USTemplate']
     let Sheetdata = utils.sheet_to_json(worksheet)
@@ -34,22 +27,11 @@ let readUSTemplate = async (data: any) => {
             ApplicationNo.push(k)
         }
     })
-    usStore.updateAppNo([])
-    usStore.updateAppNo(ApplicationNo)
-    usStore.updatePatNo([])
-    usStore.updatePatNo(PatentNo)
-    toast.success(
-        'Imported Patent Numbers, Application Numbers, Publication Numbers ',
-        {
-            timeout: 2000,
-        }
-    )
+
     return { PatentNo, ApplicationNo }
 }
 
 let stringToArray = async (data: string) => {
-    const toast = useToast()
-    let usStore = useUSPTOStore()
     let apparray: string[] = []
     let patarray: string[] = []
     data = data.split(/"/gim).join('')
@@ -58,9 +40,8 @@ let stringToArray = async (data: string) => {
     let temp = data.split(/\r?\n/).filter((e) => {
         return e != '' || null || e.match(/US/gim)
     })
-    temp.map((e, i) => {
+    temp.map((e) => {
         const rExp1: RegExp = /US[0-9]{2}\/[0-9]{3},[0-9]{3}/gim
-        const rExp2: RegExp = /US[0-9]{7,15}/gim
         let temp1 = e.match(rExp1)
         if (temp1) {
             let k = ''
@@ -77,13 +58,6 @@ let stringToArray = async (data: string) => {
     })
     apparray = [...new Set(apparray)]
     patarray = [...new Set(patarray)]
-
-    usStore.updateAppNo(apparray)
-    usStore.updatePatNo(patarray)
-    toast.success(
-        'Allocated the patent/application/Publication Number to each group below.',
-        { timeout: 2000 }
-    )
     return { PatentNo: patarray, ApplicationNo: apparray }
 }
 
