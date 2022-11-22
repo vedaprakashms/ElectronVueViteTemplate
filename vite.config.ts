@@ -12,32 +12,35 @@ fs.rmSync('src/**/*.js', { recursive: true, force: true })
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build:{
-    minify:false,
-    assetsDir: '',
-  },
-  plugins: [vue(), vueJsx(), 
-    electron({
-    // Multiple entry needed Vite >= 3.2.0
-    entry: [
-      'src/electron/main/main.ts',
-      'src/electron/main/worker.ts',
-      "src/electron/preload/preload.ts",
-    ],
-  }),
-  renderer({
-    nodeIntegration: true,
-  }),],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  },
-  worker: {
+    build: {
+        minify: false,
+        assetsDir: '',
+    },
     plugins: [
-      worker({
-        nodeIntegrationInWorker: true,
-      }),
+        vue(),
+        vueJsx(),
+        electron({
+            // Multiple entry needed Vite >= 3.2.0
+            entry: [
+                'src/electron/main/main.ts',
+                'src/electron/main/worker.ts',
+                'src/electron/preload/preload.ts',
+            ],
+        }),
+        renderer({
+            nodeIntegration: true,
+        }),
     ],
-  },
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
+    },
+    worker: {
+        plugins: [
+            worker({
+                nodeIntegrationInWorker: true,
+            }),
+        ],
+    },
 })

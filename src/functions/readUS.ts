@@ -48,6 +48,7 @@ let stringToArray = async (data: string) => {
             k = temp1.toString()
             k = k.replace(/[US.,-\/]/g, '')
             k = k.replace(' ', '')
+            k = k.replace(/([a-zA-Z]){0,1}$/gim, '')
             apparray.push(k)
         } else {
             let k = e.replace(/[US.,-\/]/g, '')

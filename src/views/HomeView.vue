@@ -2,24 +2,28 @@
 import { usTemplate } from '../functions/writeustemplate'
 import readustemplate from '../webworkers/readUStemplatexl.worker?worker'
 import readString from '../webworkers/readString.worker?worker'
+import searchApi from '../webworkers/SearchApi.worker?worker'
 import { useUSPTOStore } from '../stores/uspto'
 import { storeToRefs } from 'pinia'
 import ApplicationNumber from '../components/ApplicationNumber.vue'
 import PatentNumber from '../components/PatentNumber.vue'
+import { useToast } from 'vue-toastification'
 import { ref } from 'vue'
 let searchString = ref('')
 let uspto = useUSPTOStore()
+const toast = useToast()
 
 let { appno, patno } = storeToRefs(uspto)
 
 //when the US template is selected, the file is read in web worker and returned the values to save time.
 let fileContentChange = async (event: any) => {
+    uspto.appno = []
+    uspto.patno = []
     let worker1 = new readustemplate()
     const file = event.target.files[0]
     const dataBuffer = await file.arrayBuffer()
     worker1.postMessage(dataBuffer)
     worker1.addEventListener('message', (r) => {
-        uspto.$reset
         for (let index = 0; index < r.data.ApplicationNo.length; index++) {
             const element = r.data.ApplicationNo[index]
             uspto.appno.push({ number: element, status: 'circle' })
@@ -29,14 +33,34 @@ let fileContentChange = async (event: any) => {
             uspto.patno.push({ number: element, status: 'circle' })
         }
         worker1.terminate()
+        let worker3 = new searchApi()
+        worker3.postMessage({
+            type: 'App',
+            jsonData: JSON.stringify(uspto.appno),
+            filepath: window.myApi?.getDownloadPath(),
+        })
+        worker3.postMessage({
+            type: 'Pat',
+            jsonData: JSON.stringify(uspto.patno),
+            filepath: window.myApi?.getDownloadPath(),
+        })
+        worker3.addEventListener('message', (e) => {
+            console.log(e.data)
+            toast.success(e.data.msg, {
+                timeout: 2000,
+            })
+            window.myApi?._7zip(e.data.queryid).then(console.log)
+        })
+        //worker3.terminate()
     })
 }
 //when the application and patent numbers are put this method is taken into consideration.
 let stringData = async () => {
+    uspto.appno = []
+    uspto.patno = []
     let worker2 = new readString()
     worker2.postMessage(searchString.value)
     worker2.addEventListener('message', (r) => {
-        uspto.$reset
         for (let index = 0; index < r.data.ApplicationNo.length; index++) {
             const element = r.data.ApplicationNo[index]
             uspto.appno.push({ number: element, status: 'circle' })
@@ -46,6 +70,24 @@ let stringData = async () => {
             uspto.patno.push({ number: element, status: 'circle' })
         }
         worker2.terminate()
+        let worker3 = new searchApi()
+        worker3.postMessage({
+            type: 'App',
+            jsonData: JSON.stringify(uspto.appno),
+            filepath: window.myApi?.getDownloadPath(),
+        })
+        worker3.postMessage({
+            type: 'Pat',
+            jsonData: JSON.stringify(uspto.patno),
+            filepath: window.myApi?.getDownloadPath(),
+        })
+
+        worker3.addEventListener('message', (e) => {
+            console.log(e.data)
+            toast.success(e.data.msg, {
+                timeout: 2000,
+            })
+        })
     })
 }
 </script>
